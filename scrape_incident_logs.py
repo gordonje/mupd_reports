@@ -28,8 +28,12 @@ def extract_pdf_urls(url, html):
 			yield pdf_url
 
 
-# url for the current year's reports
-base_url = 'http://mupolice.missouri.edu/blotter/'
+# urls where we find the pdf_urls
+calendar_urls = [
+	  'http://mupolice.missouri.edu/blotter/'
+	, 'http://mupolice.missouri.edu/blotter/archive/2014/'
+	, 'http://mupolice.missouri.edu/blotter/archive/2013/'
+]
 
 # set up an array for all the links to the pdfs
 pdf_urls = []
@@ -37,56 +41,34 @@ pdf_urls = []
 # set up a requests session
 with requests.session() as requests_session:
 
-	# #### getting the current year's pdfs ####
-	r = None
-	# until we have a response...
-	while r == None:
-		# try requesting the initial page
-		try:
-			r = requests_session.get(base_url)
-		except:
-			print "Request failed."
-			# if the request fails, reset the session before trying again
-			requests_session = requests.session()
-		finally:
-			# iterate over the extracted pdf_urls
-			for url in extract_pdf_urls(base_url, r.content):
-				# append them to the global array
-				pdf_urls.append(url)
+	for cal_url in calendar_urls:
 
-	#### getting 2014's pdfs ####
-	r = None
-	# until we have a response...
-	while r == None:
-		# try requesting the initial page
-		try:
-			r = requests_session.get(base_url + 'archive/2014/')
-		except:
-			print "Request failed."
-			# if the request fails, reset the session before trying again
-			requests_session = requests.session()
-		finally:
-			# iterate over the extracted pdf_urls
-			for url in extract_pdf_urls(base_url + 'archive/2014/', r.content):
-				# append them to the global array
-				pdf_urls.append(url)
+		r = None
+		# until we have a response...
+		while r == None:
+			# try requesting the initial page
+			try:
+				r = requests_session.get(cal_url)
+			except:
+				print "Request failed."
+				# if the request fails, reset the session before trying again
+				requests_session = requests.session()
+			finally:
+				# create a Beautiful soup object from the response content, html5lib is the parser
+				soup = BeautifulSoup(r.content, 'html5lib')
 
-	#### getting 2013's pdfs ####
-	r = None
-	# until we have a response...
-	while r == None:
-		# try requesting the initial page
-		try:
-			r = requests.get(base_url + 'archive/2013/')
-		except:
-			print "Request failed."
-			# if the request fails, reset the session before trying again
-			requests_session = requests.session()
-		finally:
-			# iterate over the extracted pdf_urls
-			for url in extract_pdf_urls(base_url + 'archive/2013/', r.content):
-				# append them to the global array
-				pdf_urls.append(url)
+				# iterate over each "td" tag that has one of the two bgcolor values
+				# note that sometimes (but not always) the bgcolor values include a leading '#', hence the use of regex
+				for td in soup.find_all('td', attrs = {'bgcolor': re.compile(r"#?CAE1C1"), 'bgcolor': re.compile(r"#?F0FFC6")}):
+					# try finding an "a" tag in the td, combine the provided url with the href attribute
+					try:
+						pdf_url = cal_url + td.find("a")['href']
+					except TypeError:
+						# ignore if there's no "a" tag
+						pass
+					finally:
+						# append the pdf_url to the global array
+						pdf_urls.append(pdf_url)
 
 # iterate over the array of pdf_urls
 for pdf_url in pdf_urls:
