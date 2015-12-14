@@ -4,11 +4,11 @@ Scraping, parsing and re-publishing University of Missouri Police Department Inc
 
 ## Intro
 
-The University of Missour Police Department publishes data on it's website about their cases. They doing a great job keeping the data up-to-date, but there are a couple of problems:
+The University of Missour Police Department publishes data on its website about their cases. They're doing a great job keeping the data up-to-date, but there are a couple of problems:
 
-1.	The [incident page](http://vco.missouri.edu/mupdcfs/) has filter options to find specific kinds of incidents within a date range and/or at a specific address, which is nice. But some of the less common charges, like making a terrotist threat, aren't categorized under an incident type. Furthermore, not all cases originate from an incident report, so you won't even find those cases on this list.
+1.	The [incident page](http://vco.missouri.edu/mupdcfs/) has filter options to find specific kinds of incidents within a date range and/or at a specific address, which is nice. But some of the less common charges, like making a terrorist threat, aren't categorized under an incident type. Furthermore, not all cases originate from an incident report, so you won't even find those cases on this list.
 
-2.	The [daily clery reports](http://mupolice.missouri.edu/blotter/) include every cases and more information about each cases, including the exact charges and the current disposition of the case. But, the daily reports are [published as pdfs](http://mupolice.missouri.edu/blotter/November/111115.pdf), which prevents any searching or analysis.
+2.	The [daily clery reports](http://mupolice.missouri.edu/blotter/) include every case and more information about each one, including the exact charges and the current disposition of the case. But, the daily reports are [published as pdfs](http://mupolice.missouri.edu/blotter/November/111115.pdf), which prevents any searching or analysis.
 
 We can do better. Here's how:
 1.	Download the daily clery reports;
